@@ -1,9 +1,8 @@
-// Assuming you have a Post model
 const Post = require('../models/postModel');
 
 // Middleware to increment post views count
 const postCount = async (req, res, next) => {
-    const postId = req.params.postId;
+    const postId = req.params.id;
 
     // Check if the post exists in the database
     const post = await Post.findById(postId);
