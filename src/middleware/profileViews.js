@@ -1,14 +1,15 @@
-const User = require('../models/userModel');
+const Profile = require('../models/profileModel');
+// const User = require('../models/userModel');
 
 // Middleware to increment post views count
 const profileCount = async (req, res, next) => {
-    const userId = req.params.id;
+    const profileId = req.params.id;
 
-    const user = await User.findById(userId)
-    if (!req.cookies[`${user.username}_viewedProfile`]) {
-        user.profileViews++
-        await user.save()
-        res.cookie(`${user.username}_viewedProfile`, true, { maxAge: 24 * 60 * 60 * 1000 })
+    const profile = await Profile.findById(profileId)
+    if (!req.cookies[`${profile.username}_viewedProfile`]) {
+        profile.profileViews++
+        await profile.save()
+        res.cookie(`${profile.username}_viewedProfile`, true, { maxAge: 24 * 60 * 60 * 1000 })
     }
 
     // Continue to the next middleware or route handler

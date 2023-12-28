@@ -1,7 +1,8 @@
+const mongoose = require('mongoose')
 const Profile = require("../models/profileModel")
 const follow = async (req, res, next) => {
     try {
-        const userProfileId = mongoose.Types.ObjectId(req.user.profile);
+        const userProfileId = req.user.profile_id;
     
         const profileToFollow = await Profile.findById(req.params.id);
         if (userProfileId == req.params.id){
@@ -23,7 +24,7 @@ const follow = async (req, res, next) => {
             await profileToFollow.save();
         }
     
-        res.json(profileToFollow);
+        res.json({ message: "Successfully followed user", data: profileToFollow, status:"SUCCESS"});
         
     } catch (error) {
         next(error)
