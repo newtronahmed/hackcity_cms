@@ -12,6 +12,7 @@ const v1Categories = require("./src/v1/routes/categories")
 const v1Profile = require('./src/v1/routes/profile')
 const v1Auth = require('./src/v1/routes/auth')
 const v1User = require('./src/v1/routes/user')
+const v1Like = require('./src/v1/routes/like')
 const rolesMiddleware = require('./src/middleware/roles')
 
 require('./src/middleware/auth')
@@ -19,7 +20,6 @@ require('./src/middleware/auth')
 if (process.env.NODE_ENV != "production") {
     require("dotenv").config()
 }
-
 
 //register middlewares
 app.use(cookieParser())
@@ -31,9 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/v1/posts', v1Posts)
 app.use('/api/v1/categories', v1Categories)
 // app.use('/api/v1/auth', passport.authenticate(),  v1Auth)
-app.use('/api/v1/auth', v1Auth)
+app.use('/api/v1/asuth', v1Auth)
 app.use('/api/v1/profile', passport.authenticate('jwt', { session: false }), v1Profile)
 app.use('/api/v1/users', passport.authenticate('jwt', { session: false }), rolesMiddleware("admin"), v1User)
+app.use('/api/v1/like', passport.authenticate('jwt', { session: false}), v1Like )
 
 //Global error handler
 app.use((err, req, res, next) => {

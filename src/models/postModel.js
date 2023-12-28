@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 
 // Instantiate the schema class from the mongoose package
 const Schema = mongoose.Schema;
-
 // Create an Post schema with the mongoose schema
 const PostSchema = new Schema({
   title: {
@@ -26,6 +25,10 @@ const PostSchema = new Schema({
     type: Number,
     default: 0
   },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  }
   
 }, { timestamps: true });
 

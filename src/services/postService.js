@@ -1,10 +1,11 @@
+const User = require('../models/userModel')
 const Post = require('../models/postModel');
 const APIFeatures = require('../utils/APIFeaturs')
 class PostService {
   // List all posts
   async getAllPosts(queryStr) {
     try {
-      const query = Post.find({});
+      const query = Post.find({}).populate('author');
       // console.log(posts.length)
       const features = await new APIFeatures(query, queryStr)
         .filter()

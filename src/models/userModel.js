@@ -37,7 +37,30 @@ const UserSchema = new Schema({
     profileViews: {
         type: Number,
         default: 0
-    }
+    },
+    posts: [
+        {
+            _id: mongoose.Schema.Types.ObjectId,
+            likeCount: {
+                type: Number,
+                default: 0
+            },
+            likes: [
+                {
+                    _id: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'User'
+                    }
+                }
+            ]
+        }
+    ],
+    myLikedPosts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Post'
+        }
+    ]
 }, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {
@@ -51,7 +74,7 @@ UserSchema.pre('save', async function (next) {
 })
 UserSchema.methods.checkPassword = async function (password) {
     const user = this
-    const isCorrect = await bcrypt.compare( password, user.password )
+    const isCorrect = await bcrypt.compare(password, user.password)
     return isCorrect
 }
 

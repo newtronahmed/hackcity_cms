@@ -1,11 +1,12 @@
 const postService = require("../services/postService")
 const Post = require("../models/postModel");
+const User = require("../models/userModel");
 const { SUCCESS, FAILED } = require("../utils/constants");
 const { uploadToCloudinary, upload, uploadImage } = require("../services/uploadService")
 const bufferToDataURI = require("../utils/dataUriParser")
 const ErrorHandler = require("../utils/errorHandler")
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res, next) => {
     try {
         const posts = await postService.getAllPosts(req.query)
         // Error message, if there are no published posts
@@ -63,8 +64,11 @@ const createNewPost = async (req, res, next) => {
 
             body["image"] = imageDetails.url
         }
-
+        body["author"] = req.user._id
         const newpost = await postService.createNewPost(body)
+        const user = await User.findById(req.user._id)
+        user.posts.push(newpost._id)
+        await user.save()
         res.status(201).json({ status: "SUCCESS", data: newpost, message: "Successfully created new post" });
 
     } catch (error) {
