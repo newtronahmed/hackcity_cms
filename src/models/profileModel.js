@@ -46,12 +46,13 @@ const ProfileSchema = new mongoose.Schema({
     ]
 }, { timestamps: true })
 
-// ProfileSchema.virtual('followingCount').get(function (){
+ProfileSchema.virtual('followersCount').get(function () {
+    return this.followers.length;
+});
 
-// })
-// ProfileSchema.virtual('followersCount').get(function (){
-
-// })
+ProfileSchema.virtual('followingCount').get(function () {
+    return this.following.length;
+});
 
 const Profile = mongoose.model('profile', ProfileSchema)
 
