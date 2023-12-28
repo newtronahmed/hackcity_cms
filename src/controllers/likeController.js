@@ -1,50 +1,55 @@
 
-const User = require("../models/userModel")
-const Post = require("../models/postModel")
+const Profile = require("../models/profileModel")
+// const Post = require("../models/postModel")
+// const mongoose = require("mongoose")
 const likePost = async (req, res, next) => {
     try {
-        const user = await User.findOne({'posts._id': req.params.id}, 'posts.$');
-        // const fetchPost = await Post.findById(req.params.id).populate('author')
-        // console.log(fetchPost)
-
-        // const user = fetchPost.author
-        if (!user) {
+        const userProfile = await Profile.findOne({'posts._id': req.params.id}, 'posts.$');
+        // const userProfile = await Profile.findOne({
+        //     posts: {
+        //         $elemMatch: {
+        //             _id: req.params.id
+        //         }
+        //     }
+        // })
+        console.log(userProfile, req.params.id)
+        if (!userProfile) {
             return res.status(404).send('User or post not found');
         }
 
-        const post = user.posts[0];
-        const alreadyLike = post.likes.some(like => like._id == req.user._id);
+        const post = userProfile.posts[0];
+        const alreadyLike = post.likes.some(like => like._id == req.user.profile_id);
 
         if (alreadyLike) {
             // Dislike Logic
-            await User.updateOne(
-                {'posts._id': req.params.id},
+            await Profile.updateOne(
+                { 'posts._id': req.params.id },
                 {
                     $inc: { 'posts.$.likeCount': -1 },
-                    $pull: { 'posts.$.likes': { _id: req.user._id } }
+                    $pull: { 'posts.$.likes': { _id: req.user.profile_id } }
                 }
             );
 
-            await User.findByIdAndUpdate(
-                req.user._id,
+            await Profile.findByIdAndUpdate(
+                req.user.profile_id,
                 {
                     $pull: { myLikedPosts: { _id: req.params.id } }
                 }
             );
-            res.json({message: "disliked"});
+            res.json({ message: "disliked" });
         } else {
             // Like Logic
-            await User.updateOne(
-                {'posts._id': req.params.id},
+            await Profile.updateOne(
+                { 'posts._id': req.params.id },
                 {
                     $inc: { 'posts.$.likeCount': 1 },
-                    $push: { 'posts.$.likes': { _id: req.user._id } }
+                    $push: { 'posts.$.likes': { _id: req.user.profile_id } }
                 }
             );
 
 
-            await User.findByIdAndUpdate(
-                req.user._id,
+            await Profile.findByIdAndUpdate(
+                req.user.profile_id,
                 {
                     $push: {
                         myLikedPosts: {
@@ -54,11 +59,11 @@ const likePost = async (req, res, next) => {
                     }
                 }
             );
-            res.json({ message: "liked"});
+            res.json({ message: "liked" });
         }
     } catch (error) {
         console.error(error);
         next(error)
     }
 }
-module.exports = { likePost}
+module.exports = { likePost }

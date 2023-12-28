@@ -4,7 +4,8 @@ const User = require("../models/userModel");
 const { SUCCESS, FAILED } = require("../utils/constants");
 const { uploadToCloudinary, upload, uploadImage } = require("../services/uploadService")
 const bufferToDataURI = require("../utils/dataUriParser")
-const ErrorHandler = require("../utils/errorHandler")
+const ErrorHandler = require("../utils/errorHandler");
+const Profile = require("../models/profileModel");
 
 const getAllPosts = async (req, res, next) => {
     try {
@@ -64,11 +65,11 @@ const createNewPost = async (req, res, next) => {
 
             body["image"] = imageDetails.url
         }
-        body["author"] = req.user._id
+        body["author"] = req.user.profile_id
         const newpost = await postService.createNewPost(body)
-        const user = await User.findById(req.user._id)
-        user.posts.push(newpost._id)
-        await user.save()
+        const userProfile = await Profile.findById(req.user.profile_id)
+        userProfile.posts.push(newpost._id)
+        await userProfile.save()
         res.status(201).json({ status: "SUCCESS", data: newpost, message: "Successfully created new post" });
 
     } catch (error) {

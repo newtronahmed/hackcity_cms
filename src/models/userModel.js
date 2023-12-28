@@ -1,6 +1,7 @@
 // Require the mongoose package
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const Profile = require('./profileModel');
 // Instantiate the schema class from the mongoose package
 const Schema = mongoose.Schema;
 
@@ -14,7 +15,7 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: [true, "Please provide the title"],
-        unique: [true, "The title name already exists"],
+        unique: [true, "User with this email already exists"],
     },
     username: {
         type: String,
@@ -34,37 +35,19 @@ const UserSchema = new Schema({
         type: String,
         default: "User"
     },
-    profileViews: {
-        type: Number,
-        default: 0
-    },
-    posts: [
-        {
-            _id: mongoose.Schema.Types.ObjectId,
-            likeCount: {
-                type: Number,
-                default: 0
-            },
-            likes: [
-                {
-                    _id: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        ref: 'User'
-                    }
-                }
-            ]
-        }
-    ],
-    myLikedPosts: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Post'
-        }
-    ]
+    profile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'profile'
+    }
+
 }, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {
     const user = this;
+    if (user.isNew) {
+        const profile = await Profile.create({ user: this._id })
+        user.profile = profile
+    }
     //only if password was modified, hash before storing in db
     if (!user.isModified('password')) return next()
     const salt = await bcrypt.genSalt(10)
