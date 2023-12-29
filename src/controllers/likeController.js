@@ -12,7 +12,7 @@ const likePost = async (req, res, next) => {
         //         }
         //     }
         // })
-        console.log(userProfile, req.params.id)
+        // console.log(userProfile, req.params.id)
         if (!userProfile) {
             return res.status(404).send('User or post not found');
         }
@@ -36,7 +36,7 @@ const likePost = async (req, res, next) => {
                     $pull: { myLikedPosts: { _id: req.params.id } }
                 }
             );
-            res.json({ message: "disliked" });
+            res.json({ status: "SUCCESS", message: "disliked" });
         } else {
             // Like Logic
             await Profile.updateOne(
@@ -59,10 +59,10 @@ const likePost = async (req, res, next) => {
                     }
                 }
             );
-            res.json({ message: "liked" });
+            res.json({ status:"SUCCESS", message: "liked" });
         }
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         next(error)
     }
 }
