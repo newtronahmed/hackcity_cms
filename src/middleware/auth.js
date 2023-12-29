@@ -38,22 +38,22 @@ passport.use('signup', new passportLocalStrategy({
 }))
 
 passport.use('login', new passportLocalStrategy({
-    usernameField: 'email',
+    usernameField: 'usernameoremail',
     passwordField: 'password'
-}, async function (email, password, done) {
-    if (!email || !password) {
+}, async function (usernameoremail, password, done) {
+    if (!usernameoremail || !password) {
         return done(null, false, { message: "Both email and password is required" })
     }
-    const UserSchema = Joi.object({
-        email: Joi.string().email().required(),
-        password:Joi.string().required()
-    })
-    const { value, error} = UserSchema.validate({ email, password})
-    if (error){
-        return done(error)
-    }
+    // const UserSchema = Joi.object({
+    //     email: Joi.string().email().required(),
+    //     password:Joi.string().required()
+    // })
+    // const { value, error} = UserSchema.validate({ email, password})
+    // if (error){
+    //     return done(error)
+    // }
     try {
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ $or : [ { email: usernameoremail}, { username: usernameoremail} ] })
         if (!user) {
             // const error = Error('User with email not found',)
             return done(null, false, { message: "User with email not found" })
