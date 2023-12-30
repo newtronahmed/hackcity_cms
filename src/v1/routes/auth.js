@@ -25,8 +25,7 @@ router.post("/login", async function (req, res, next) {
         try {
             if (err || !user) {
                 const errorMessage = info ? info.message : 'Authentication failed';
-                const error = new ErrorHandler(400, errorMessage);
-                return next(error);
+                return next(new ErrorHandler(400, errorMessage));
             }
 
             req.login(user, { session: false }, async function (error) {

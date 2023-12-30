@@ -3,6 +3,7 @@ const Post = require('../models/postModel')
 const app = require('../../index')
 // const base_url = ""
 let postId = null
+let bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1OGQ5YzQ0M2FmY2JiMmMxODNiNzQ3MSIsImVtYWlsIjoienViQHltYWlsLmNvbSIsInVzZXJuYW1lIjoiYWhtZWR6IiwibmFtZSI6IkFobWVkbyIsInJvbGUiOiJBZG1pbiIsInByb2ZpbGVfaWQiOiI2NThkOWM0NDNhZmNiYjJjMTgzYjc0NzIifSwiaWF0IjoxNzAzODYyMzAxfQ.sog8tCydVq2P4UsLJtOf3fLZKGdjepgYE5kF88hZL-w"
 const superapp = request(app)
 describe('Post crud endpoints', () => {
     beforeAll(async () => {
@@ -15,7 +16,10 @@ describe('Post crud endpoints', () => {
     it('should create a new post', async function () {
         const res = await superapp
             .post('/api/v1/posts')
+            // .getHeader()
+            .set('Authorization', `Bearer ${bearerToken}`)
             .send({ title: "new title", content: "This is a new body" })
+            
 
         expect(res.statusCode).toEqual(201)
         postId = res.body.data._id

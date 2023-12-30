@@ -24,7 +24,18 @@ describe('Authentication testing endpoints', () => {
     })
     it('should login user', async () => {
         const user = {
-            email: "ahmed@hmail.com",
+            usernameoremail: "ahmed@hmail.com",
+            password:"newpassword"
+        }
+        const res = await superapp
+                        .post('/api/v1/auth/login')
+                        .send(user)
+        expect(res.statusCode).toEqual(200)
+        expect(res.body).toHaveProperty('token')
+    })
+    it('should also login user', async () => {
+        const user = {
+            usernameoremail: "uniqueAhmed",
             password:"newpassword"
         }
         const res = await superapp

@@ -28,10 +28,19 @@ const PostSchema = new Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'profile'
-  }
+  },
+  comments: [
+    { 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'comment'
+    }
+  ]
   
 }, { timestamps: true });
 
+PostSchema.virtual('commentsCount').get(function (){
+  return this.comments.length
+})
 // Create an Post model with the user schema
 const Post = mongoose.model('Post', PostSchema);
 

@@ -20,7 +20,7 @@ passport.use('signup', new passportLocalStrategy({
         name: Joi.string().max(100).required(),
     });
     const { value, error } = userSchema.validate(req.body)
-    if (error){
+    if (error) {
         return done(error)
     }
     try {
@@ -44,19 +44,12 @@ passport.use('login', new passportLocalStrategy({
     if (!usernameoremail || !password) {
         return done(null, false, { message: "Both email and password is required" })
     }
-    // const UserSchema = Joi.object({
-    //     email: Joi.string().email().required(),
-    //     password:Joi.string().required()
-    // })
-    // const { value, error} = UserSchema.validate({ email, password})
-    // if (error){
-    //     return done(error)
-    // }
+   
     try {
-        const user = await User.findOne({ $or : [ { email: usernameoremail}, { username: usernameoremail} ] })
+        const user = await User.findOne({ $or: [{ email: usernameoremail }, { username: usernameoremail }] })
         if (!user) {
             // const error = Error('User with email not found',)
-            return done(null, false, { message: "User with email not found" })
+            return done(null, false, { message: "User with email or username not found" })
         }
         const passwordMatch = await user.checkPassword(password)
         // console.log({passwordMatch})

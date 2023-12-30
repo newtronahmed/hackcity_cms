@@ -9,6 +9,12 @@ const ProfileSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    bio: {
+        type: String
+    },
+    profilePhoto: {
+        type: String
+    },
     posts: [
         {
             _id: mongoose.Schema.Types.ObjectId,

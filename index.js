@@ -14,6 +14,7 @@ const v1Auth = require('./src/v1/routes/auth')
 const v1User = require('./src/v1/routes/user')
 const v1Like = require('./src/v1/routes/like')
 const v1Follow = require('./src/v1/routes/follow')
+const v1Comment = require('./src/v1/routes/comment')
 const rolesMiddleware = require('./src/middleware/roles')
 
 require('./src/middleware/auth')
@@ -28,6 +29,8 @@ app.use(cors())
 app.use(express.json());
 app.use(helmet())
 app.use(express.urlencoded({ extended: true }));
+
+
 //route middlewares
 app.use('/api/v1/posts', v1Posts)
 app.use('/api/v1/categories', v1Categories)
@@ -37,9 +40,11 @@ app.use('/api/v1/profile', passport.authenticate('jwt', { session: false }), v1P
 app.use('/api/v1/users', passport.authenticate('jwt', { session: false }), rolesMiddleware("admin"), v1User)
 app.use('/api/v1/like', passport.authenticate('jwt', { session: false}), v1Like )
 app.use('/api/v1/follow', passport.authenticate('jwt', { session: false}), v1Follow)
+app.use('/api/v1/comments', v1Comment)
 
 //Global error handler
 app.use((err, req, res, next) => {
+    console.log('global error handler')
     console.log(err.message)
     console.log(err.stack)
     const message = err.message ?? "Internal server error"
@@ -48,6 +53,7 @@ app.use((err, req, res, next) => {
     }
     res.status(err.statusCode ?? 500).json({ status: "FAILED", message })
 })
+
 //Test server endpoint
 app.get('/api/v1/', (req, res) => {
     res.send({ message: "OK" })

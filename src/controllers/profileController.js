@@ -2,6 +2,7 @@ const User = require("../models/userModel")
 const Post = require("../models/postModel")
 const Profile = require("../models/profileModel")
 const mongoose = require('mongoose')
+const { uploadImage } = require("../services/uploadService")
 module.exports.getProfile = async (req, res, next) => {
     const { id: profileId } = req.params
     try {
@@ -9,7 +10,7 @@ module.exports.getProfile = async (req, res, next) => {
         if (!req.user) {
             return res.status(400).json({ message: "User not found" })
         }
-        const user = await User.findById(profileId)
+        const user = await Profile.findById(profileId)
         // if (!req.cookies[`${user.username}_viewedProfile`]) {
         //     user.profileViews++
         //     await user.save()
@@ -26,7 +27,7 @@ module.exports.getMyProfile = async (req, res, next) => {
     try {
         console.log(req.user)
         const profile = await Profile.findById(req.user?.profile_id).populate('user')
-        res.json({ message: "This is a secured route", data: profile})
+        res.json({ message: "This is a secured route", data: profile })
     } catch (error) {
         next(error)
     }
@@ -43,7 +44,31 @@ module.exports.getMyPosts = async (req, res, next) => {
         const posts = await Post.find({ author: profileId }).populate('author');
 
         // Respond with the found posts
-        res.status(200).json({ message: "Posts for user",  status: "SUCCESS", data: posts });
+        res.status(200).json({ message: "Posts for user", status: "SUCCESS", data: posts });
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports.editMyProfile = async (req, res, next) => {
+    try {
+        const body = req.body
+        if (req.file) {
+            const imageDetails = await uploadImage(file);
+            //    console.log({imageDetails})
+
+            body["image"] = imageDetails.url
+        }
+        const profile = await Profile.findByIdAndUpdate(req.user.profile_id, body, {
+            new: true,
+            runValidators: true
+        })
+        if (!profile) {
+            return res.status(200).json({ message: "Profile not found ", status: "FAILED" })
+        }
+        return res.status(200).json({ message: "Successfully updated your profile", status: "SUCCESS" })
+        // profile
+
     } catch (error) {
         next(error)
     }
