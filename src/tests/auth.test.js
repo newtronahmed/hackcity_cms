@@ -10,7 +10,7 @@ describe('Authentication testing endpoints', () => {
     //     await app.close()
     // })
     it('should signup user', async ()=>{
-        const user = { 
+        let user = { 
             name: "Ahmed",
             email:"ahmed@hmail.com",
             password:"newpassword",
@@ -23,13 +23,18 @@ describe('Authentication testing endpoints', () => {
         expect(res.body.user.name).toEqual('Ahmed')
     })
     it('should login user', async () => {
-        const user = {
+        // User.create = async (user) => {
+        //     return {
+        //         name: ""
+        //     }
+        // }
+        let user = {
             usernameoremail: "ahmed@hmail.com",
             password:"newpassword"
         }
         const res = await superapp
                         .post('/api/v1/auth/login')
-                        .send(user)
+                        .send({useranameoremail: "ahmed@hmail.com", password: "newpassword"})
         expect(res.statusCode).toEqual(200)
         expect(res.body).toHaveProperty('token')
     })

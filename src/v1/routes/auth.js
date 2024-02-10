@@ -1,3 +1,121 @@
+/**
+ * @swagger
+ * /signup:
+ *   post:
+ *     summary: User signup
+ *     description: Endpoint for user registration.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: User signup details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *     responses:
+ *       '201':
+ *         description: Signup successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Signup successful
+ *               user: { userObject }
+ *       '400':
+ *         description: Bad request or validation error
+ */
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: User login
+ *     description: Endpoint for user login.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: User login details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *     responses:
+ *       '200':
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               token: jwtToken
+ *       '400':
+ *         description: Bad request or authentication failure
+ *       '404':
+ *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /forgot-password:
+ *   post:
+ *     summary: Forgot password
+ *     description: Endpoint for generating a reset token for password recovery.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: User email for password recovery
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Reset token successfully generated
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Reset token successfully generated
+ *               data: { resetToken, resetTokenExpirationDate }
+ *       '400':
+ *         description: Bad request or missing email
+ *       '404':
+ *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /reset-password:
+ *   post:
+ *     summary: Reset password
+ *     description: Endpoint for resetting user password using a valid reset token.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: Reset token and new password
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               resetToken:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Password updated successfully
+ *       '400':
+ *         description: Bad request or missing reset token/new password
+ *       '404':
+ *         description: Invalid or expired reset token
+ */
+
 const express = require('express')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')

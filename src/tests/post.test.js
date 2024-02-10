@@ -1,6 +1,7 @@
 const request = require('supertest')
 const Post = require('../models/postModel')
 const app = require('../../index')
+const User = require('../models/userModel')
 // const base_url = ""
 let postId = null
 let bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1OGQ5YzQ0M2FmY2JiMmMxODNiNzQ3MSIsImVtYWlsIjoienViQHltYWlsLmNvbSIsInVzZXJuYW1lIjoiYWhtZWR6IiwibmFtZSI6IkFobWVkbyIsInJvbGUiOiJBZG1pbiIsInByb2ZpbGVfaWQiOiI2NThkOWM0NDNhZmNiYjJjMTgzYjc0NzIifSwiaWF0IjoxNzAzODYyMzAxfQ.sog8tCydVq2P4UsLJtOf3fLZKGdjepgYE5kF88hZL-w"
@@ -9,9 +10,23 @@ describe('Post crud endpoints', () => {
     beforeAll(async () => {
         // Clear posts before each test
         await Post.deleteMany()
+        const user = await User.create({
+            username: "TestAhmed",
+            name: "TestAhmed",
+            email: "testemail@gmail.com",
+            password: "passwordtest"
+        })
+
     })
     // afterAll( async ()=> {
     //     await app.close()
+    // })
+    // it('should login user', async function () {
+    //     const res = await superapp
+    //         .post('/api/v1/auth/login')
+    //         .send({ usernameoremail: 'testemail@gmail.com', password: 'passwordtest' })
+    //     bearerToken = res.body.token
+    //     expect(res.statusCode).toEqual(200)
     // })
     it('should create a new post', async function () {
         const res = await superapp
@@ -19,10 +34,11 @@ describe('Post crud endpoints', () => {
             // .getHeader()
             .set('Authorization', `Bearer ${bearerToken}`)
             .send({ title: "new title", content: "This is a new body" })
-            
+
 
         expect(res.statusCode).toEqual(201)
         postId = res.body.data._id
+        console.log(res.body)
         expect(res.body.data).toHaveProperty('title')
     })
     it('should get the created post', async () => {
@@ -40,10 +56,11 @@ describe('Post crud endpoints', () => {
         expect(res.statusCode).toEqual(400);
         // expect(res.body.data).toHaveProperty('_id');
     });
-    it('should update the post', async ()=>{
+    it('should update the post', async () => {
+        console.log('postid', postId)
         const res = await superapp
-                    .patch(`/api/v1/posts/${postId}`)
-                    .send({ title: "Updated Title"})
+            .patch(`/api/v1/posts/${postId}`)
+            .send({ title: "Updated Title" })
         expect(res.statusCode).toEqual(200)
         expect(res.body.data.title).toEqual('Updated Title')
     })

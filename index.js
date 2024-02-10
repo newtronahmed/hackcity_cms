@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const passport = require('passport')
 const cors = require('cors')
 const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
-
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerUiExpress = require('swagger-ui-express')
 
 const v1Posts = require("./src/v1/routes/posts")
 const v1Categories = require("./src/v1/routes/categories")
@@ -30,11 +31,39 @@ app.use(express.json());
 app.use(helmet())
 app.use(express.urlencoded({ extended: true }));
 
+//swagger
+const options = {
+    definition: {
+        openapi: "3.1.0",
+        info: {
+            titile: "Connext API Documentation",
+            version: "0.1.0",
+            description: "This is the backend implementation of a social media network application",
+            license: {
+                name: "MIT",
+                url: "https://spdx.org/licenses/MIT.html",
+            },
+            contact: {
+                name: "NeutronAhmed",
+                url: "neutro-portfolio.netlify.app",
+                email: "hmedzubairu365@gmail.com"
+            },
+
+        },
+        servers:[
+            {
+                url: "http://localhost:4000"
+            }
+        ]
+    },
+    apis: ["./src/v1/routes/*.js"]
+}
+const spec = swaggerJsDoc(options)
+app.use('/v1/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(spec))
 
 //route middlewares
 app.use('/api/v1/posts', v1Posts)
 app.use('/api/v1/categories', v1Categories)
-// app.use('/api/v1/auth', passport.authenticate(),  v1Auth)
 app.use('/api/v1/auth', v1Auth)
 app.use('/api/v1/profile', passport.authenticate('jwt', { session: false }), v1Profile)
 app.use('/api/v1/users', passport.authenticate('jwt', { session: false }), rolesMiddleware("admin"), v1User)

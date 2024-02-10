@@ -7,7 +7,7 @@ class PostService {
     try {
       const query = Post.find({}).populate('author');
       // console.log(posts.length)
-      const features = await new APIFeatures(query, queryStr)
+      const features = new APIFeatures(query, queryStr)
         .filter()
         .sort()
         .paginate()

@@ -68,7 +68,8 @@ bash
 
 curl -X PATCH -H "Content-Type: application/json" -d '{"title": "Updated Post"}' https://hackcitycms-e8e8b5dada74.herokuapp.com/api/v1/posts/123
 
-## API Routes
+## SWAGGER DOCS
+src
 
 ### 1. API Prefix
 
