@@ -6,6 +6,7 @@ const JWTStrategy = require('passport-jwt').Strategy
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const User = require('../models/userModel')
 const Profile = require('../models/profileModel')
+const ErrorHandler = require('../utils/errorHandler')
 
 passport.use('signup', new passportLocalStrategy({
     usernameField: 'email',
@@ -26,7 +27,8 @@ passport.use('signup', new passportLocalStrategy({
     try {
         const userExists = await User.findOne({ email })
         if (userExists) {
-            return done(null, false, { message: "Email already in use" })
+            const error = new ErrorHandler(400, "Email already in use")
+            return done(error, false, { message: "Email already in use" })
         }
         // const profile = await Profile.create()
         const newUser = await User.create({ username, email, password, name, role: "User" })

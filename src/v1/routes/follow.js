@@ -37,5 +37,5 @@ const router = express.Router()
  *        description: Something went wrong
  */
 
-router.post('/:id', follow)
+router.post('/:username', follow)
 module.exports = router;

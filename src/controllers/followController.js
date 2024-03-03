@@ -4,9 +4,9 @@ const follow = async (req, res, next) => {
     try {
         const userProfileId = req.user.profile_id;
     
-        const profileToFollow = await Profile.findById(req.params.id);
-        if (userProfileId == req.params.id){
-            return res.status(400).json({ message: "You cannot follow yourself"})
+        const profileToFollow = await Profile.findOne({username: req.params.username});
+        if (req.user.username == req.params.username){
+            return res.status(403).json({ message: "You cannot follow yourself"})
         }
     
         if (profileToFollow.followers.some(follower =>

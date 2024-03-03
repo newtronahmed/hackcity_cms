@@ -4,19 +4,20 @@ const Profile = require("../models/profileModel")
 const mongoose = require('mongoose')
 const { uploadImage } = require("../services/uploadService")
 module.exports.getProfile = async (req, res, next) => {
-    const { id: profileId } = req.params
+    const { username } = req.params
+    // console.log(req.profile)
     try {
-        const currentUserId = req.user.id;
+        // const currentUserId = req.user.id;
         if (!req.user) {
-            return res.status(400).json({ message: "User not found" })
+            return res.status(400).json({ message: "Session Expired" })
         }
-        const user = await Profile.findById(profileId)
+        const profile = await Profile.findOne({username})
         // if (!req.cookies[`${user.username}_viewedProfile`]) {
         //     user.profileViews++
         //     await user.save()
         //     res.cookie(`${user.username}_viewedProfile`, true, { maxAge: 24 * 60 * 60 * 1000 })
         // }
-        res.json({ status: "SUCCESS", data: user, message: "Successfuly found profile" })
+        res.json({ status: "SUCCESS", data: profile, message: "Successfuly fetched profile" })
     } catch (error) {
         next(error)
     }
@@ -27,7 +28,7 @@ module.exports.getMyProfile = async (req, res, next) => {
     try {
         console.log(req.user)
         const profile = await Profile.findById(req.user?.profile_id).populate('user')
-        res.json({ message: "This is a secured route", data: profile })
+        res.json({ message: "Successfully fetched your profile", data: profile })
     } catch (error) {
         next(error)
     }

@@ -5,6 +5,9 @@ const ProfileSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
+    username: {
+        type: String
+    },
     profileViews: {
         type: Number,
         default: 0

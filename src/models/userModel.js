@@ -45,7 +45,7 @@ const UserSchema = new Schema({
 UserSchema.pre('save', async function (next) {
     const user = this;
     if (user.isNew) {
-        const profile = await Profile.create({ user: this._id })
+        const profile = await Profile.create({ user: this._id, username: this.username })
         user.profile = profile
     }
     //only if password was modified, hash before storing in db

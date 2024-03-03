@@ -159,7 +159,7 @@ const profileCount = require('../../middleware/profileViews')
 const router = express.Router()
 router.get("/", getMyProfile)
 //if the request is not comming from the current user, increase profile viewss
-router.get('/profile', getMyPosts);
-router.get("/:id", profileCount, getProfile)
+router.get('/posts', getMyPosts);
+router.get("/:username", profileCount, getProfile)
 router.patch('/', editMyProfile)
 module.exports = router;

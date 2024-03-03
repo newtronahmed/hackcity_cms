@@ -17,11 +17,11 @@ class UserService {
       throw error;
     }
   }
-  // Create a new post
-  async createNewUser(post) {
+  // Create a new user
+  async createNewUser(user) {
 
     try {
-      const newUser = new User(post);
+      const newUser = new User(user);
 
       const savedUser = await newUser.save();
       return savedUser;
